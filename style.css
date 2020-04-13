@@ -71,3 +71,11 @@ h1, p {
   opacity: 0.2;
   box-shadow: 10px 10px 8px black;
 }
+
+.item{
+  padding: 10px;
+  /* border: 2px solid black; */
+  margin: 10px;
+  box-shadow: 2px 2px 2px black;
+  background-color: azure;
+}

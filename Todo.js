@@ -111,7 +111,7 @@ class Todo extends Component {
     var found = completedTasks.filter(
       task => task.taskID === draggedTask.taskID
     );
-    console.log(found);
+    
     if (found.length > 0) {
       return;
     }
@@ -143,6 +143,7 @@ class Todo extends Component {
           <div>
             {todos.map(todo => (
               <div
+                className="item"
                 id={todo.taskID}
                 key={todo.taskID}
                 draggable
@@ -162,7 +163,8 @@ class Todo extends Component {
         >
           <div className="header">Completed</div>
           {completedTasks.map((task, index) => (
-            <div
+            <div 
+              className="item"
               key={task.taskID}
               id={task.taskID}
               draggable
