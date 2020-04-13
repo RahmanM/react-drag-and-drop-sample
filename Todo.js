@@ -7,7 +7,6 @@ const COMPLETED = "COMPLETED";
 const TODOS = "TODOS";
 
 class Todo extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -38,19 +37,19 @@ class Todo extends Component {
   // Local storage handlers
   getTodosFromStorage = () => {
     return JSON.parse(localStorage.getItem(TODOS));
-  }
+  };
 
   getCompletedFromStorage = () => {
     return JSON.parse(localStorage.getItem(COMPLETED));
-  }
+  };
 
-  saveCompletedToStorage = (completed) => {
+  saveCompletedToStorage = completed => {
     localStorage.setItem(COMPLETED, JSON.stringify(completed));
-  }
+  };
 
-  saveTodosToStorage = (todos) => {
+  saveTodosToStorage = todos => {
     localStorage.setItem(TODOS, JSON.stringify(todos));
-  }
+  };
   // End Local storage handlers
 
   onDragTodo = (event, todo) => {
@@ -62,26 +61,36 @@ class Todo extends Component {
 
   onDragOverTodo = event => {
     event.preventDefault();
-   };
+  };
 
   // When dropping a completed todo back to todo list
   onDropTodo = event => {
     const { completedTasks, draggedTask, todos } = this.state;
 
     // Ignore if task is dropped in the same box
-    var found =  todos.filter(todo => todo.taskID === draggedTask.taskID)
-    if(found.length>0){
+    var found = todos.filter(todo => todo.taskID === draggedTask.taskID);
+    if (found.length > 0) {
       return;
     }
 
     this.setState({
       todos: [...todos, draggedTask],
-      completedTasks: completedTasks.filter(task => task.taskID !== draggedTask.taskID),
+      completedTasks: completedTasks.filter(
+        task => task.taskID !== draggedTask.taskID
+      ),
       draggedTask: {}
     });
-
   };
 
+  // Format the draggable item
+  dragStartTodo = (event) => {
+    document.getElementById(event.target.id).classList.add("on-drag");
+  }
+
+  // Reset the draggable item format back to normal
+  dragEndTodo = (event) => {
+    document.getElementById(event.target.id).classList.remove("on-drag");
+  }
 
   onDragCompleted = (event, todo) => {
     event.preventDefault();
@@ -99,9 +108,11 @@ class Todo extends Component {
     const { completedTasks, draggedTask, todos } = this.state;
 
     // Ignore if task is dropped in the same box
-    var found =  completedTasks.filter(task => task.taskID === draggedTask.taskID)
+    var found = completedTasks.filter(
+      task => task.taskID === draggedTask.taskID
+    );
     console.log(found);
-    if(found.length > 0){
+    if (found.length > 0) {
       return;
     }
 
@@ -110,31 +121,33 @@ class Todo extends Component {
       todos: todos.filter(task => task.taskID !== draggedTask.taskID),
       draggedTask: {}
     });
-
   };
 
   // Save the todos and completed on each rendering/update
-  componentDidUpdate(){
+  componentDidUpdate() {
     this.saveTodosToStorage(this.state.todos);
     this.saveCompletedToStorage(this.state.completedTasks);
   }
-
 
   render() {
     const { todos, completedTasks } = this.state;
 
     return (
       <div className="App">
-        <div  className="todos"
+        <div
+          className="todos"
           onDrop={event => this.onDropTodo(event)}
           onDragOver={event => this.onDragOverTodo(event)}
         >
-        <div className="header">Todo</div>
+          <div className="header">In Progress</div>
           <div>
             {todos.map(todo => (
               <div
+                id={todo.taskID}
                 key={todo.taskID}
                 draggable
+                onDragStart ={(e)=> this.dragStartTodo(e)}
+                onDragEnd ={(e)=> this.dragEndTodo(e)}
                 onDrag={event => this.onDragTodo(event, todo)}
               >
                 {todo.task}
@@ -142,17 +155,20 @@ class Todo extends Component {
             ))}
           </div>
         </div>
-        <div 
+        <div
           onDrop={event => this.onDropCompleted(event)}
           onDragOver={event => this.onDragOverCompleted(event)}
           className="done"
         >
-        <div className="header">Completed</div>
+          <div className="header">Completed</div>
           {completedTasks.map((task, index) => (
-            <div 
-            key={task.taskID} 
-            draggable
-            onDrag={event => this.onDragCompleted(event, task)}
+            <div
+              key={task.taskID}
+              id={task.taskID}
+              draggable
+              onDragStart ={(e)=> this.dragStartTodo(e)}
+              onDragEnd ={(e)=> this.dragEndTodo(e)}
+              onDrag={event => this.onDragCompleted(event, task)}
             >
               {task.task}
             </div>

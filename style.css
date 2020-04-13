@@ -64,3 +64,10 @@ h1, p {
   margin-bottom: 10px;
   background-color: gold;
 }
+
+.on-drag{
+  border: solid 3px gold;
+  background-color: white;
+  opacity: 0.2;
+  box-shadow: 10px 10px 8px black;
+}
